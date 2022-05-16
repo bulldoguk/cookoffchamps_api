@@ -1,12 +1,17 @@
+# blueprints/api/__init__.py
+from flask import Blueprint
 from flask_restx import Api
+from api.user import api as user_ns
 
-from api.cats import api as cats
+blueprint = Blueprint('api', __name__, url_prefix='/api')
 
-api = Api(
-    title='CookOffChampsAPIs',
+api_extension = Api(
+    blueprint,
+    title='Flask RESTx Demo',
     version='1.0',
-    description='A description',
-    # All API metadatas
+    description='Application tutorial to demonstrate Flask RESTx extension\
+        for better project structure and auto generated documentation',
+    doc='/doc'
 )
 
-api.add_namespace(cats, path='/api/cats')
+api_extension.add_namespace(user_ns)
