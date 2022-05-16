@@ -1,15 +1,8 @@
 from flask import Flask
-from flask_restful import Api
-from myapi.resources.foo import Foo
-# from myapi.resources.bar import Bar
-# from myapi.resources.baz import Baz
+from api import api
 
 app = Flask(__name__)
-api = Api(app)
+api.init_app(app)
 
-api.add_resource(Foo, '/Foo', '/Foo/<string:id>')
-# api.add_resource(Bar, '/Bar', '/Bar/<string:id>')
-# api.add_resource(Baz, '/Baz', '/Baz/<string:id>')
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
