@@ -7,10 +7,9 @@ blueprint = Blueprint('api', __name__, url_prefix='/api')
 
 api_extension = Api(
     blueprint,
-    title='Flask RESTx Demo',
+    title='Flask RESTx setup for CookOffChamps.com',
     version='1.0',
-    description='Application tutorial to demonstrate Flask RESTx extension\
-        for better project structure and auto generated documentation',
+    description='Backend, self documenting API blocks for cookoffchamps',
     doc='/doc'
 )
 
