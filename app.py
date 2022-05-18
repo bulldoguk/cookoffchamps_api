@@ -8,4 +8,4 @@ app.config['RESTPLUS_MASK_SWAGGER'] = False
 app.register_blueprint(api)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

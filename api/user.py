@@ -16,48 +16,48 @@ oAuthId_example = {
     'tenantId': 'dfgsdgdfg-fgsdfg-fgsdfg'
 }
 
-email = api.model('email', {
+Email = api.model('email', {
     'id': fields.String(required=True, description='Unique email address identifier'),
     'emailAddress': fields.String(required=True, description='Email address'),
     'oAuth': fields.Boolean(value=False),
     'primary': fields.Boolean(value=False)
 })
 
-email_example = {
+EmailExample = {
     'id': 'abc-123-dfsf',
     'emailAddress': 'something@example.com',
     'oAuth': True,
     'primary': True
 }
 
-user = api.model('User', {
+Detail = api.model('Detail', {
     'id': fields.String(required=True, description='Unique user identifier'),
     'firstName': fields.String(description='User first name'),
     'lastName': fields.String(description='User last name'),
     'oAuthConnections': fields.Nested(oAuthId, as_list=True),
     'cellPhone': fields.String(required=False, description='Single cellphone number'),
-    'emailAddress': fields.Nested(email, as_list=True)
+    'emailAddress': fields.Nested(Email, as_list=True)
 })
 
-user_example = {
+DetailExample = {
     'id': '234-24-234-234',
     'firstName': 'FirstName',
     'lastName': 'LastName',
     'oAuthConnections': [oAuthId_example],
     'cellPhone': '1234567980',
-    'emailAddress': [email_example]
+    'emailAddress': [EmailExample]
 }
 
 
-@api.route('')
+@api.route('/')
 class UserList(Resource):
     """Get users list and create new users"""
 
     @api.response(500, 'Internal Server error')
-    @api.marshal_list_with(user)
+    @api.marshal_list_with(Detail)
     def get(self):
         """List with all the users"""
-        user_list = [user_example]
+        user_list = [DetailExample]
 
         return {
             'entities': user_list,
@@ -66,14 +66,14 @@ class UserList(Resource):
 
     @api.response(400, 'User with the given name already exists')
     @api.response(500, 'Internal Server error')
-    @api.expect(user)
-    @api.marshal_with(user, code=HTTPStatus.CREATED)
+    @api.expect(Detail)
+    @api.marshal_with(Detail, code=HTTPStatus.CREATED)
     def post(self):
         """Create a new entity"""
 
         if request.json['name'] == 'User name':
             api.abort(400, 'User with the given name already exists')
-        user_list = [user_example]
+        user_list = [DetailExample]
 
         return user_list, 201
 
@@ -83,7 +83,7 @@ class UserList(Resource):
 @api.response(404, 'User not found')
 class User(Resource):
     @api.doc('get_user')
-    @api.marshal_with(user)
+    @api.marshal_with(Detail)
     def get(self, id):
         """Fetch a user given its identifier"""
         for thisUser in UserList:
