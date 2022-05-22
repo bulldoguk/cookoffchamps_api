@@ -70,10 +70,7 @@ class UserList(Resource):
     @api.marshal_with(Detail, code=HTTPStatus.CREATED)
     def post(self):
         """Create a new entity"""
-
-        if request.json['name'] == 'User name':
-            api.abort(400, 'User with the given name already exists')
-        user_list = [DetailExample]
+        user_list = [request.json]
 
         return user_list, 201
 
@@ -84,9 +81,18 @@ class UserList(Resource):
 class User(Resource):
     @api.doc('get_user')
     @api.marshal_with(Detail)
+    @api.response(500, 'Internal Server error')
     def get(self, id):
         """Fetch a user given its identifier"""
         for thisUser in UserList:
             if thisUser['id'] == id:
                 return thisUser
         api.abort(404)
+
+    def put(self, id):
+        """Update user details"""
+        for thisUser in UserList:
+            if thisUser['id'] == id:
+                return (DetailExample), 201
+        api.abort(404)
+
