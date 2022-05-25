@@ -75,7 +75,7 @@ class UserList(Resource):
         return user_list, 201
 
 
-@api.route('/<id>')
+@api.route('/google/<id>')
 @api.param('id', 'The user identifier')
 @api.response(404, 'User not found')
 class User(Resource):
@@ -86,13 +86,13 @@ class User(Resource):
         """Fetch a user given its identifier"""
         for thisUser in UserList:
             if thisUser['id'] == id:
-                return thisUser
-        api.abort(404)
+                return thisUser, 200
 
-    def put(self, id):
+    def post(self, id):
         """Update user details"""
         for thisUser in UserList:
             if thisUser['id'] == id:
                 return (DetailExample), 201
-        api.abort(404)
 
+    def options(self):
+        return 'ok', 200
