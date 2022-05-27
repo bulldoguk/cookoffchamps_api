@@ -4,84 +4,47 @@ from http import HTTPStatus
 
 api = Namespace('user', description='User related operations')
 
-oAuthId = api.model('oAuth', {
-    'provider': fields.String(required=True, description='oAuth provider, such as Google, etc'),
-    'providerId': fields.String(required=True, description='UserID from provider'),
-    'tenantId': fields.String(required=True, description='Tenant ID from oAuth provider')
+user_model = api.model('user', {
+    "sub": fields.String(required=True, description='oAuth provider ID'),
+    "name": fields.String(required=False, description='oAuth provided'),
+    "given_name": fields.String(required=False, description='oAuth provided'),
+    "family_name": fields.String(required=False, description='oAuth provided'),
+    "profile": fields.String(required=False, description='oAuth profile link'),
+    "picture": fields.String(required=False, description='oAuth provided'),
+    "email": fields.String(required=True, description='Unique identifier for our system'),
+    "email_verified": fields.Boolean(required=False),
+    "gender": fields.String(required=False),
+    "locale": fields.String(required=False, description='Used in i18n, defaults to en'),
+    "hd": fields.String(required=False, description='Used to identify superusers, must have email_verified')
 })
 
-oAuthId_example = {
-    'provider': 'google',
-    'providerId': 'asda-sdfsdf-123123-sdf',
-    'tenantId': 'dfgsdgdfg-fgsdfg-fgsdfg'
-}
-
-Email = api.model('email', {
-    'id': fields.String(required=True, description='Unique email address identifier'),
-    'emailAddress': fields.String(required=True, description='Email address'),
-    'oAuth': fields.Boolean(value=False),
-    'primary': fields.Boolean(value=False)
-})
-
-EmailExample = {
-    'id': 'abc-123-dfsf',
-    'emailAddress': 'something@example.com',
-    'oAuth': True,
-    'primary': True
-}
-
-Detail = api.model('Detail', {
-    'id': fields.String(required=True, description='Unique user identifier'),
-    'firstName': fields.String(description='User first name'),
-    'lastName': fields.String(description='User last name'),
-    'oAuthConnections': fields.Nested(oAuthId, as_list=True),
-    'cellPhone': fields.String(required=False, description='Single cellphone number'),
-    'emailAddress': fields.Nested(Email, as_list=True)
-})
-
-DetailExample = {
-    'id': '234-24-234-234',
-    'firstName': 'FirstName',
-    'lastName': 'LastName',
-    'oAuthConnections': [oAuthId_example],
-    'cellPhone': '1234567980',
-    'emailAddress': [EmailExample]
+user_example = {
+    "sub": "106226106196704017887",
+    "name": "Gary Bailey",
+    "given_name": "Gary",
+    "family_name": "Bailey",
+    "profile": "https://plus.google.com/106226106196704017887",
+    "picture": "https://lh3.googleusercontent.com/a-/AOh14GhuErhFmR0i2t-vF8aSdLtI1LP4aR65Os2oioYXKJc=s96-c",
+    "email": "gary@myhmbiz.com",
+    "email_verified": True,
+    "gender": "male",
+    "locale": "en",
+    "hd": "myhmbiz.com"
 }
 
 
 @api.route('/')
-class UserList(Resource):
-    """Get users list and create new users"""
-
-    @api.response(500, 'Internal Server error')
-    @api.marshal_list_with(Detail)
-    def get(self):
-        """List with all the users"""
-        user_list = [DetailExample]
-
-        return {
-            'entities': user_list,
-            'total_records': len(user_list)
-        }
+class User(Resource):
+    """Get user info or create/update user"""
 
     @api.response(400, 'User with the given name already exists')
     @api.response(500, 'Internal Server error')
-    @api.expect(Detail)
-    @api.marshal_with(Detail, code=HTTPStatus.CREATED)
+    @api.marshal_with(user_model)
+    @api.expect(user_model)
     def post(self):
         """Create a new entity"""
-        user_list = [request.json]
-
-        return user_list, 201
-
-
-@api.route('/google/')
-class GoogleAuth(Resource):
-    @api.doc('post_google')
-    def post(self):
-        """Returns user info for google"""
-        this_user = {"firstName": 'Gary', "lastName": 'Bailey'}
-        return this_user, 200
+        print(request.json)
+        return request.json, 201
 
 
 @api.route('/user/<id>')
@@ -89,19 +52,12 @@ class GoogleAuth(Resource):
 @api.response(404, 'User not found')
 class User(Resource):
     @api.doc('get_user')
-    @api.marshal_with(Detail)
+    @api.marshal_with(user_model)
     @api.response(500, 'Internal Server error')
     def get(self, id):
         """Fetch a user given its identifier"""
-        for thisUser in UserList:
-            if thisUser['id'] == id:
-                return thisUser, 200
+        return user_example, 200
 
     def post(self, id):
         """Update user details"""
-        for thisUser in UserList:
-            if thisUser['id'] == id:
-                return (DetailExample), 201
-
-    def options(self):
-        return 'ok', 200
+        return "User updated", 201
