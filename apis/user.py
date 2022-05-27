@@ -75,7 +75,16 @@ class UserList(Resource):
         return user_list, 201
 
 
-@api.route('/google/<id>')
+@api.route('/google/')
+class GoogleAuth(Resource):
+    @api.doc('post_google')
+    def post(self):
+        """Returns user info for google"""
+        this_user = {"firstName": 'Gary', "lastName": 'Bailey'}
+        return this_user, 200
+
+
+@api.route('/user/<id>')
 @api.param('id', 'The user identifier')
 @api.response(404, 'User not found')
 class User(Resource):

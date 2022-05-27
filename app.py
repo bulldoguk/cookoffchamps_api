@@ -9,6 +9,6 @@ app = Flask(__name__)
 api.init_app(app)
 
 # enable CORS
-CORS(app, resources={r'/*': {'origins': '*'}})
+CORS(app)
 
 app.run(debug=True)
