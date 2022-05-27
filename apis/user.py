@@ -1,6 +1,6 @@
-from flask import request
+from flask import request, jsonify
 from flask_restx import Namespace, Resource, fields
-from http import HTTPStatus
+from modules.auth.token import token_required
 
 api = Namespace('user', description='User related operations')
 
@@ -35,22 +35,27 @@ user_example = {
 
 @api.route('/')
 class User(Resource):
-    """Get user info or create/update user"""
+    """Create/update user"""
 
+    @api.response(403, "Forbidden")
     @api.response(400, 'User with the given name already exists')
     @api.response(500, 'Internal Server error')
+    @api.response(201, 'User updated successfully')
     @api.marshal_with(user_model)
     @api.expect(user_model)
     def post(self):
         """Create a new entity"""
-        print(request.json)
+        print(f'Request {request.headers.get("Authorization")}')
+        token_test = token_required(request.headers.get("Authorization")).get_json()
+        if not token_test.get('result'):
+            return token_test.get('message'), 403
         return request.json, 201
 
 
-@api.route('/user/<id>')
-@api.param('id', 'The user identifier')
-@api.response(404, 'User not found')
-class User(Resource):
+@api.route('/<id>')
+class UserUpdate(Resource):
+    @api.param('id', 'The user identifier')
+    @api.response(404, 'User not found')
     @api.doc('get_user')
     @api.marshal_with(user_model)
     @api.response(500, 'Internal Server error')
@@ -58,6 +63,6 @@ class User(Resource):
         """Fetch a user given its identifier"""
         return user_example, 200
 
-    def post(self, id):
+    def patch(self, id):
         """Update user details"""
         return "User updated", 201
