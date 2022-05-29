@@ -1,6 +1,5 @@
 from flask import request, jsonify
-from google.auth import crypt
-from google.auth import jwt
+import requests
 
 
 def token_required(headers):
@@ -9,17 +8,16 @@ def token_required(headers):
     if headers:
         token = headers
 
-    print(f'Got token {token}')
     if not token:
         print(f'Kicking back token {token}')
         return jsonify({'result': False, 'message': 'a valid token is missing'})
 
     try:
-        # data = jwt.decode(token.split()[1], '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', algorithms=["HS256"])
-        # encoded = token.split()
-        # print(encoded)
-        data = jwt.decode(encoded, verify=False)
-        print(f'Decoded data {data}')
+        encoded = token.split()[1]
+        uri = 'https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=' + encoded
+        print(f'Calling {uri}')
+        validate = requests.get(uri).content
+        print(f'validation {validate}')
         return jsonify({'result': True, 'message': 'success'})
     except:
         print('Failed to decode')
