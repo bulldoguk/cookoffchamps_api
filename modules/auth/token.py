@@ -16,9 +16,13 @@ def token_required(headers):
         encoded = token.split()[1]
         uri = 'https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=' + encoded
         print(f'Calling {uri}')
-        validate = requests.get(uri).content
-        print(f'validation {validate}')
-        return jsonify({'result': True, 'message': 'success'})
+        # TODO: Need to find a way to cache this request to reduce hits on Google APIS
+        validate = requests.get(uri).json()
+        print(validate)
+        if int(validate.get('expires_in')) > 0 and validate.get('email_verified') == 'true':
+            return jsonify({'result': True, 'message': 'success'})
+        else:
+            return jsonify({'result': False, 'message': 'Token not valid'})
     except:
         print('Failed to decode')
         return jsonify({'result': False, 'message': 'token is invalid'})

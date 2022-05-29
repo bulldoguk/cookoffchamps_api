@@ -45,7 +45,6 @@ class User(Resource):
     @api.expect(user_model)
     def post(self):
         """Create a new entity"""
-        print(f'Request {request.headers.get("Authorization")}')
         token_test = token_required(request.headers.get("Authorization")).get_json()
         if not token_test.get('result'):
             return token_test.get('message'), 403
