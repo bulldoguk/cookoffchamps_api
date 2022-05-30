@@ -5,6 +5,8 @@ from pymongo import ReturnDocument
 def add_or_update(info):
     try:
         user_collection = get_db().users
+        # must always have extended_info: True when we have our own user record
+        info["extended_info"] = True
 
         record = user_collection.find_one_and_update(
             {"email": info.get("email")},

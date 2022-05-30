@@ -16,7 +16,9 @@ user_model = api.model('user', {
     "email_verified": fields.Boolean(required=False),
     "gender": fields.String(required=False),
     "locale": fields.String(required=False, description='Used in i18n, defaults to en'),
-    "hd": fields.String(required=False, description='Used to identify superusers, must have email_verified')
+    "hd": fields.String(required=False, description='Used to identify superusers, must have email_verified'),
+    "extended_info": fields.Boolean(required=False, description='Added by system as flag that we have extended data on this user'),
+    "some_new_data": fields.String(required=False, description='Test field to show passing extended data back')
 })
 
 user_example = {
@@ -30,7 +32,8 @@ user_example = {
     "email_verified": True,
     "gender": "male",
     "locale": "en",
-    "hd": "myhmbiz.com"
+    "hd": "myhmbiz.com",
+    "extended_info": True
 }
 
 
