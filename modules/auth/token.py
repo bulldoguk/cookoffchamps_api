@@ -15,10 +15,9 @@ def token_required(headers):
     try:
         encoded = token.split()[1]
         uri = 'https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=' + encoded
-        print(f'Calling {uri}')
         # TODO: Need to find a way to cache this request to reduce hits on Google APIS
         validate = requests.get(uri).json()
-        print(validate)
+        # TODO: So what happens if the token does not exist?
         if int(validate.get('expires_in')) > 0 and validate.get('email_verified') == 'true':
             return jsonify({'result': True, 'message': 'success'})
         else:

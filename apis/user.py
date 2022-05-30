@@ -1,6 +1,7 @@
 from flask import request, jsonify
 from flask_restx import Namespace, Resource, fields
 from modules.auth.token import token_required
+from modules.user.actions import add_or_update
 
 api = Namespace('user', description='User related operations')
 
@@ -48,7 +49,11 @@ class User(Resource):
         token_test = token_required(request.headers.get("Authorization")).get_json()
         if not token_test.get('result'):
             return token_test.get('message'), 403
-        return request.json, 201
+        try:
+            result = add_or_update(request.json)
+            return result, 201
+        except:
+            return 'Failed user update', 500
 
 
 @api.route('/<id>')
