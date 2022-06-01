@@ -1,16 +1,19 @@
-from bson import ObjectId
 from flask import request, jsonify
 from flask_restx import Namespace, Resource, fields
 from modules.auth.token import token_required
-from modules.user.actions import add_or_update
 
-api = Namespace('user', description='User related operations')
+api = Namespace('event', description='User related operations')
 
-user_model = api.model('user', {
-    "guid": fields.String(required=False, description='Internal GUID'),
+event_model = api.model('event', {
+    "sub": fields.String(required=True, description='oAuth provider ID'),
+    "name": fields.String(required=False, description='oAuth provided'),
     "given_name": fields.String(required=False, description='oAuth provided'),
+    "family_name": fields.String(required=False, description='oAuth provided'),
+    "profile": fields.String(required=False, description='oAuth profile link'),
     "picture": fields.String(required=False, description='oAuth provided'),
     "email": fields.String(required=True, description='Unique identifier for our system'),
+    "email_verified": fields.Boolean(required=False),
+    "gender": fields.String(required=False),
     "locale": fields.String(required=False, description='Used in i18n, defaults to en'),
     "hd": fields.String(required=False, description='Used to identify superusers, must have email_verified'),
     "extended_info": fields.Boolean(required=False, description='Added by system as flag that we have extended data on this user'),
@@ -18,10 +21,15 @@ user_model = api.model('user', {
 })
 
 user_example = {
-    "guid": "3b6598c6-6d4f-4293-ac66-9f564dc302e8",
+    "sub": "106226106196704017887",
+    "name": "Gary Bailey",
     "given_name": "Gary",
+    "family_name": "Bailey",
+    "profile": "https://plus.google.com/106226106196704017887",
     "picture": "https://lh3.googleusercontent.com/a-/AOh14GhuErhFmR0i2t-vF8aSdLtI1LP4aR65Os2oioYXKJc=s96-c",
     "email": "gary@myhmbiz.com",
+    "email_verified": True,
+    "gender": "male",
     "locale": "en",
     "hd": "myhmbiz.com",
     "extended_info": True

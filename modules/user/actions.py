@@ -1,5 +1,6 @@
 from modules.db.mongodb import get_db
 from pymongo import ReturnDocument
+import uuid
 
 
 def add_or_update(info):
@@ -7,6 +8,8 @@ def add_or_update(info):
         user_collection = get_db().users
         # must always have extended_info: True when we have our own user record
         info["extended_info"] = True
+        if not info.get("guid"):
+            info["guid"] = str(uuid.uuid4())
 
         record = user_collection.find_one_and_update(
             {"email": info.get("email")},
