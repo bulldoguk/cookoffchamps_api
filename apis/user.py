@@ -1,5 +1,4 @@
-from bson import ObjectId
-from flask import request, jsonify
+from flask import request
 from flask_restx import Namespace, Resource, fields
 from modules.auth.token import token_required
 from modules.user.actions import add_or_update
@@ -10,11 +9,12 @@ user_model = api.model('user', {
     "guid": fields.String(required=False, description='Internal GUID'),
     "given_name": fields.String(required=False, description='oAuth provided'),
     "picture": fields.String(required=False, description='oAuth provided'),
-    "email": fields.String(required=True, description='Unique identifier for our system'),
     "locale": fields.String(required=False, description='Used in i18n, defaults to en'),
     "hd": fields.String(required=False, description='Used to identify superusers, must have email_verified'),
-    "extended_info": fields.Boolean(required=False, description='Added by system as flag that we have extended data on this user'),
-    "some_new_data": fields.String(required=False, description='Test field to show passing extended data back')
+    "extended_info": fields.Boolean(required=False, description='Added by system as flag that we have extended data '
+                                                                'on this user'),
+    "some_new_data": fields.String(required=False, description='Test field to show passing extended data back'),
+    "superAdmin": fields.Boolean(default=False,readonly=True)
 })
 
 user_example = {
@@ -24,7 +24,8 @@ user_example = {
     "email": "gary@myhmbiz.com",
     "locale": "en",
     "hd": "myhmbiz.com",
-    "extended_info": True
+    "extended_info": True,
+    "superAdmin": False
 }
 
 
@@ -50,9 +51,9 @@ class User(Resource):
             return 'Failed user update', 500
 
 
-@api.route('/<id>')
+@api.route('/<guid>')
 class UserUpdate(Resource):
-    @api.param('id', 'The user identifier')
+    @api.param('guid', 'The user identifier - unique in our system')
     @api.response(404, 'User not found')
     @api.doc('get_user')
     @api.marshal_with(user_model)

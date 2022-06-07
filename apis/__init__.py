@@ -1,6 +1,7 @@
 from flask_restx import Api
 
 from .user import api as user
+from .event import api as event
 
 api = Api(
     title='Cook Off Champs API documentation',
@@ -10,3 +11,4 @@ api = Api(
 )
 
 api.add_namespace(user, path='/user')
+api.add_namespace(event, path='/event')

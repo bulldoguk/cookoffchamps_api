@@ -1,51 +1,48 @@
 from flask import request, jsonify
 from flask_restx import Namespace, Resource, fields
 from modules.auth.token import token_required
+from modules.event.actions import add_or_update
 
-api = Namespace('event', description='User related operations')
+api = Namespace('event', description='Event related operations')
 
 event_model = api.model('event', {
-    "sub": fields.String(required=True, description='oAuth provider ID'),
-    "name": fields.String(required=False, description='oAuth provided'),
-    "given_name": fields.String(required=False, description='oAuth provided'),
-    "family_name": fields.String(required=False, description='oAuth provided'),
-    "profile": fields.String(required=False, description='oAuth profile link'),
-    "picture": fields.String(required=False, description='oAuth provided'),
-    "email": fields.String(required=True, description='Unique identifier for our system'),
-    "email_verified": fields.Boolean(required=False),
-    "gender": fields.String(required=False),
-    "locale": fields.String(required=False, description='Used in i18n, defaults to en'),
-    "hd": fields.String(required=False, description='Used to identify superusers, must have email_verified'),
-    "extended_info": fields.Boolean(required=False, description='Added by system as flag that we have extended data on this user'),
-    "some_new_data": fields.String(required=False, description='Test field to show passing extended data back')
+    "guid": fields.String(required=True, description='System event GUID'),
+    "address_street_number": fields.String(required=True, description='Street number'),
+    "address_route": fields.String(required=True, description='Street'),
+    "address_locality": fields.String(required=True, description='City'),
+    "address_administrative_area_level_1": fields.String(required=True, description='State'),
+    "address_administrative_area_level_2": fields.String(required=False, description='County'),
+    "address_country": fields.String(required=True, description='Country'),
+    "address_postal_code": fields.String(required=True, description='Postal code'),
+    "address_postal_code_suffix": fields.String(required=False, description='Extended postal code suffix'),
+    "address_lat": fields.Float(required=False, description='Latitude'),
+    "address_lng": fields.Float(required=False, description='Longtitude')
 })
 
-user_example = {
-    "sub": "106226106196704017887",
-    "name": "Gary Bailey",
-    "given_name": "Gary",
-    "family_name": "Bailey",
-    "profile": "https://plus.google.com/106226106196704017887",
-    "picture": "https://lh3.googleusercontent.com/a-/AOh14GhuErhFmR0i2t-vF8aSdLtI1LP4aR65Os2oioYXKJc=s96-c",
-    "email": "gary@myhmbiz.com",
-    "email_verified": True,
-    "gender": "male",
-    "locale": "en",
-    "hd": "myhmbiz.com",
-    "extended_info": True
+event_example = {
+    "guid": "3b6598c6-6d4f-4293-ac66-9f564dc302e8",
+    "address_street_number": "9771",
+    "address_route": "Some Street",
+    "address_locality": "Ubersville",
+    "address_administrative_area_level_1": "Texas",
+    "address_administrative_area_level_2": "Some county",
+    "address_country": "Country",
+    "address_postal_code": "77443",
+    "address_postal_code_suffix": "1234",
+    "address_lat": 39.1234,
+    "address_lng": 10.5432
 }
 
 
 @api.route('/')
-class User(Resource):
-    """Create/update user"""
+class Event(Resource):
+    """Create/update event"""
 
     @api.response(403, "Forbidden")
-    @api.response(400, 'User with the given name already exists')
     @api.response(500, 'Internal Server error')
-    @api.response(201, 'User updated successfully')
-    @api.marshal_with(user_model)
-    @api.expect(user_model)
+    @api.response(201, 'Event updated successfully')
+    @api.marshal_with(event_model)
+    @api.expect(event_model)
     def post(self):
         """Create a new entity"""
         token_test = token_required(request.headers.get("Authorization")).get_json()
@@ -55,20 +52,4 @@ class User(Resource):
             result = add_or_update(request.json)
             return result, 201
         except:
-            return 'Failed user update', 500
-
-
-@api.route('/<id>')
-class UserUpdate(Resource):
-    @api.param('id', 'The user identifier')
-    @api.response(404, 'User not found')
-    @api.doc('get_user')
-    @api.marshal_with(user_model)
-    @api.response(500, 'Internal Server error')
-    def get(self, id):
-        """Fetch a user given its identifier"""
-        return user_example, 200
-
-    def patch(self, id):
-        """Update user details"""
-        return "User updated", 201
+            return 'Failed event update', 500
