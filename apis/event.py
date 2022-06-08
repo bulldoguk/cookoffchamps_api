@@ -1,7 +1,7 @@
 from flask import request, jsonify
 from flask_restx import Namespace, Resource, fields
 from modules.auth.token import token_required
-from modules.event.actions import add_or_update
+from modules.event.actions import add_or_update, list_events
 
 api = Namespace('event', description='Event related operations')
 
@@ -17,6 +17,10 @@ event_model = api.model('event', {
     "address_postal_code_suffix": fields.String(required=False, description='Extended postal code suffix'),
     "address_lat": fields.Float(required=False, description='Latitude'),
     "address_lng": fields.Float(required=False, description='Longtitude')
+})
+
+event_list_model = api.model('Event list', {
+    "events": fields.List(fields.Nested(event_model))
 })
 
 event_example = {
@@ -52,4 +56,21 @@ class Event(Resource):
             result = add_or_update(request.json)
             return result, 201
         except:
-            return 'Failed event update', 500
+            return 'Failed event add or update', 500
+
+
+@api.route('/list')
+# @api.route('/list/<userguid>')
+class EventList(Resource):
+    """Pull list of events for a given user or public"""
+
+    @api.response(500, 'Internal server error')
+    @api.response(200, 'Success')
+    @api.marshal_list_with(event_model)
+    def get(self, userguid=''):
+        """Pull list of all events"""
+        try:
+            result = list_events(userguid)
+            return result, 200
+        except Exception as e:
+            return e, 500
