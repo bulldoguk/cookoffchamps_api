@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from flask_restx import Namespace, Resource, fields
+from flask_restx import Namespace, Resource, fields, reqparse
 from modules.auth.token import token_required
 from modules.event.actions import add_or_update, list_events
 
@@ -7,6 +7,7 @@ api = Namespace('event', description='Event related operations')
 
 event_model = api.model('event', {
     "guid": fields.String(required=True, description='System event GUID'),
+    "title": fields.String(required=True, description='Event title'),
     "address_street_number": fields.String(required=True, description='Street number'),
     "address_route": fields.String(required=True, description='Street'),
     "address_locality": fields.String(required=True, description='City'),
@@ -19,12 +20,9 @@ event_model = api.model('event', {
     "address_lng": fields.Float(required=False, description='Longtitude')
 })
 
-event_list_model = api.model('Event list', {
-    "events": fields.List(fields.Nested(event_model))
-})
-
 event_example = {
     "guid": "3b6598c6-6d4f-4293-ac66-9f564dc302e8",
+    "title": "This is going to be a great event",
     "address_street_number": "9771",
     "address_route": "Some Street",
     "address_locality": "Ubersville",
@@ -60,15 +58,18 @@ class Event(Resource):
 
 
 @api.route('/list')
-# @api.route('/list/<userguid>')
 class EventList(Resource):
-    """Pull list of events for a given user or public"""
+    """Pull list of events public or for a user"""
 
+    @api.doc(params={'userguid': {'description': 'User GUID to match with owner or admin users',
+                                'type': 'str', 'default': ''}})
+    # TODO Will need a way to filter or paginate this
     @api.response(500, 'Internal server error')
     @api.response(200, 'Success')
     @api.marshal_list_with(event_model)
-    def get(self, userguid=''):
+    def get(self):
         """Pull list of all events"""
+        userguid = str(request.args.get('userguid'))
         try:
             result = list_events(userguid)
             return result, 200
