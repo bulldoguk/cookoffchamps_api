@@ -17,6 +17,9 @@ def add_or_update(info):
             info["admin"] = []
             # Remove the userGUID - we don't want that left behind
             del info["userGUID"]
+        # define an seName for this event - needs to be unique in the DB
+        if not info.get("seTitle"):
+            info["seTitle"] = info.get("title").replace(" ", "-")
 
         record = event_collection.find_one_and_update(
             {"guid": info.get("guid")},
@@ -43,6 +46,16 @@ def list_events(userguid):
         return json.loads(json_util.dumps(events))
     except Exception as e:
         print('Failed to list events', e)
+        return None
+
+
+def get_event(se_name):
+    try:
+        event_collection = get_db().events
+        event = event_collection.find_one({"seTitle": se_name})
+        return json.loads(json_util.dumps(event))
+    except Exception as e:
+        print('Failed to get event', e)
         return None
 
 

@@ -1,13 +1,14 @@
 from flask import request, jsonify
 from flask_restx import Namespace, Resource, fields, reqparse
 from modules.auth.token import token_required
-from modules.event.actions import add_or_update, list_events
+from modules.event.actions import add_or_update, list_events, get_event
 
 api = Namespace('event', description='Event related operations')
 
 event_model = api.model('event', {
     "guid": fields.String(required=True, description='System event GUID'),
     "title": fields.String(required=True, description='Event title'),
+    "seTitle": fields.String(required=False, description="SE title for use in URLs"),
     "address_street_number": fields.String(required=True, description='Street number'),
     "address_route": fields.String(required=True, description='Street'),
     "address_locality": fields.String(required=True, description='City'),
@@ -23,6 +24,7 @@ event_model = api.model('event', {
 event_example = {
     "guid": "3b6598c6-6d4f-4293-ac66-9f564dc302e8",
     "title": "This is going to be a great event",
+    "seTitle": "This_is_going_to_be_a_great_event",
     "address_street_number": "9771",
     "address_route": "Some Street",
     "address_locality": "Ubersville",
@@ -61,8 +63,6 @@ class Event(Resource):
 class EventList(Resource):
     """Pull list of events public or for a user"""
 
-    @api.doc(params={'userguid': {'description': 'User GUID to match with owner or admin users',
-                                'type': 'str', 'default': ''}})
     # TODO Will need a way to filter or paginate this
     @api.response(500, 'Internal server error')
     @api.response(200, 'Success')
@@ -72,6 +72,21 @@ class EventList(Resource):
         userguid = str(request.args.get('userguid'))
         try:
             result = list_events(userguid)
+            return result, 200
+        except Exception as e:
+            return e, 500
+
+
+@api.route('/detail/<se_name>')
+class EventDetail(Resource):
+    """Pull event details for a given seName"""
+
+    @api.response(500, 'Internal server error')
+    @api.response(200, 'Success')
+    @api.marshal_with(event_model)
+    def get(self, se_name):
+        try:
+            result = get_event(se_name)
             return result, 200
         except Exception as e:
             return e, 500
