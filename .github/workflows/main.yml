@@ -28,3 +28,6 @@ jobs:
           cd ~/cookoffchamps_api
           export APOS_RELEASE_ID=cinco2021
           git pull https://${{ secrets.PAT }}:x-oauth-basic@github.com/bulldoguk/cookoffchamps_api.git master
+          python3 -m pip install --upgrade pip.
+          pip install -r requirements.txt
+          
