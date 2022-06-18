@@ -1,7 +1,7 @@
 steps:
   - name: gcr.io/k8s-skaffold/pack
     env:
-      - GOOGLE_ENTRYPOINT='$_ENTRYPOINT -p $PORT'
+      - GOOGLE_ENTRYPOINT=$_ENTRYPOINT
     args:
       - build
       - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
@@ -40,7 +40,7 @@ substitutions:
   _SERVICE_NAME: cookoffchamps-api
   _LABELS: gcb-trigger-id=9f6d611e-7934-4e13-97dc-db099ba643bc
   _TRIGGER_ID: 9f6d611e-7934-4e13-97dc-db099ba643bc
-  _ENTRYPOINT: flask run -p 8000
+  _ENTRYPOINT: flask run
   _DEPLOY_REGION: us-central1
 tags:
   - gcp-cloud-build-deploy-cloud-run
