@@ -8,4 +8,5 @@ api.init_app(app)
 # enable CORS
 CORS(app)
 
-app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
