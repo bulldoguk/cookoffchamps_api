@@ -2,7 +2,7 @@
 # should check on startup
 
 def collections():
-    collection_list = ['users', 'events']
+    collection_list = ['users', 'events', 'categories', 'questions']
     return collection_list
 
 

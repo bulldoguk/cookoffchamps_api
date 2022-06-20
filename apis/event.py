@@ -18,7 +18,8 @@ event_model = api.model('event', {
     "address_postal_code": fields.String(required=True, description='Postal code'),
     "address_postal_code_suffix": fields.String(required=False, description='Extended postal code suffix'),
     "address_lat": fields.Float(required=False, description='Latitude'),
-    "address_lng": fields.Float(required=False, description='Longtitude')
+    "address_lng": fields.Float(required=False, description='Longitude'),
+    "categories": fields.List(fields.String(example="3b6598c6-6d4f-4293-ac66-9f564dc302e8"))
 })
 
 event_example = {
@@ -34,7 +35,9 @@ event_example = {
     "address_postal_code": "77443",
     "address_postal_code_suffix": "1234",
     "address_lat": 39.1234,
-    "address_lng": 10.5432
+    "address_lng": 10.5432,
+    "categories": ["3b6598c6-6d4f-4293-ac66-9f564dc302e8", "3b6598c6-6d4f-4293-ac66-9f564dc302e8",
+                   "3b6598c6-6d4f-4293-ac66-9f564dc302e8"]
 }
 
 
