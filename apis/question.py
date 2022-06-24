@@ -14,19 +14,14 @@ question_model = api.model('question', {
     "responses": fields.List(fields.String(example="3b6598c6-6d4f-4293-ac66-9f564dc302e8"))
 })
 
-question = {
+question_example = {
     "guid": "3b6598c6-6d4f-4293-ac66-9f564dc302e8",
-    "title": "This is the first category",
-    "questions": ["3b6598c6-6d4f-4293-ac66-9f564dc302e8", "3b6598c6-6d4f-4293-ac66-9f564dc302e8",
+    "relatedCategory": "3b6598c6-6d4f-4293-ac66-9f564dc302e8",
+    "headLine": "This is the first question",
+    "detail": "A much longer version of the question",
+    "responses": ["3b6598c6-6d4f-4293-ac66-9f564dc302e8", "3b6598c6-6d4f-4293-ac66-9f564dc302e8",
                   "3b6598c6-6d4f-4293-ac66-9f564dc302e8"]
 }
-
-response_model = api.model('response', {
-    "guid": fields.String(),
-    "relatedQuestion": fields.String(),
-    "score": fields.Integer(),
-    "description": fields.String()
-})
 
 @api.route('/')
 class Question(Resource):
