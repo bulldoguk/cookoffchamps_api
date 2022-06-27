@@ -33,5 +33,5 @@ class Question(Resource):
     @api.marshal_with(question_model)
     @api.expect(question_model)
     def post(self):
-        """Create a new category"""
+        """Create a new question"""
         return 'Success', 201

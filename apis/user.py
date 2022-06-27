@@ -59,7 +59,7 @@ class UserUpdate(Resource):
     @api.marshal_with(user_model)
     @api.response(500, 'Internal Server error')
     def get(self, id):
-        """Fetch a user given its identifier"""
+        """Fetch a user given their identifier"""
         return user_example, 200
 
     def patch(self, id):

@@ -31,5 +31,5 @@ class Response(Resource):
     @api.marshal_with(response_model)
     @api.expect(response_model)
     def post(self):
-        """Create a new category"""
+        """Create a new response"""
         return 'Success', 201

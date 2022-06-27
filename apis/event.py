@@ -51,7 +51,7 @@ class Event(Resource):
     @api.marshal_with(event_model)
     @api.expect(event_model)
     def post(self):
-        """Create a new entity"""
+        """Create a new event"""
         token_test = token_required(request.headers.get("Authorization")).get_json()
         if not token_test.get('result'):
             return token_test.get('message'), 403
