@@ -42,5 +42,3 @@ substitutions:
   _TRIGGER_ID: 9f6d611e-7934-4e13-97dc-db099ba643bc
   _ENTRYPOINT: flask run --host=0.0.0.0 --port=$PORT
   _DEPLOY_REGION: us-central1
-tags:
-  - cookoffchamps-api
