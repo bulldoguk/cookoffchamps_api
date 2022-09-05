@@ -8,7 +8,10 @@ from pymongo import MongoClient
 
 # connect to MongoDB, change the << MONGODB URL >> to reflect your own connection string
 # client = MongoClient('mongodb+srv://cookoffchamps_api:dQBlGRuVkj1OGzD6@cluster0-pri.gcoozxh.mongodb.net/cookoffchamps?retryWrites=true&w=majority')
-client = MongoClient('mongodb+srv://cookoffchamps_api:dQBlGRuVkj1OGzD6@cluster0-pl-0.p9twh.mongodb.net/?retryWrites=true&w=majority')
+# client = MongoClient('mongodb+srv://cookoffchamps_api:dQBlGRuVkj1OGzD6@cluster0-pl-0.p9twh.mongodb.net/?retryWrites=true&w=majority')
+# client = MongoClient('mongodb+srv://a3-cincoranch:vcZH3VLLvkGzhKsQ@cluster0.gcoozxh.mongodb.net/?retryWrites=true&w=majority')
+client = MongoClient('mongodb+srv://myhmbizAPI:193y1kP3cquqMB20@cluster0.gcoozxh.mongodb.net/?retryWrites=true&w=majority')
+
 # mongodb+srv://<username>:<password>@cluster0-pri.gcoozxh.mongodb.net/?retryWrites=true&w=majority
 db = client.cookoffchamps
 # Issue the serverStatus command and print the results
