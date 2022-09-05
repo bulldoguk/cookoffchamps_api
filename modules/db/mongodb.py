@@ -8,7 +8,7 @@ from pymongo import MongoClient
 
 # connect to MongoDB, change the << MONGODB URL >> to reflect your own connection string
 # client = MongoClient('mongodb+srv://cookoffchamps:pdTmw1QfihTyTgc6@cluster0.pljfk.mongodb.net/?retryWrites=true&w=majority')
-client = MongoClient('mongodb+srv://cookoffchamps_api:1XJNeYyxm2FZehmS@cluster0.dtqwd.mongodb.net/?retryWrites=true&w=majority')
+client = MongoClient('mongodb+srv://cookoffchamps_api:1XJNeYyxm2FZehmS@cluster0-pri.gcoozxh.mongodb.net/?retryWrites=true&w=majority')
 db = client.cookoffchamps
 # Issue the serverStatus command and print the results
 serverStatusResult = db.list_collection_names()
